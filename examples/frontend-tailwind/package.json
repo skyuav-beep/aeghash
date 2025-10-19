@@ -1,0 +1,13 @@
+{
+  "name": "aeg-tailwind-token-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "tokens:sync": "python3 ../../scripts/export_design_tokens.py",
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "dev": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

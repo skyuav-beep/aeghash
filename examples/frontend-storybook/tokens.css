@@ -1,0 +1,7 @@
+@import "../../tokens/dist/design-tokens.css";
+
+:root {
+  font-family: var(--aeg-font-family-sans-primary);
+  color: var(--aeg-color-text-primary);
+  background-color: var(--aeg-color-background);
+}

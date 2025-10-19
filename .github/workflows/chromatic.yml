@@ -1,0 +1,50 @@
+name: Chromatic Visual Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "examples/frontend-storybook/**"
+      - "tokens/**"
+      - "docs/uiux/**"
+      - ".github/workflows/chromatic.yml"
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/frontend-storybook
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync design tokens
+        run: pnpm run tokens:sync
+
+      - name: Run Storybook a11y suite
+        run: pnpm run test:a11y
+
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.chpt_6438cfd6f6ada3c }}
+          workingDir: examples/frontend-storybook
+          buildScriptName: storybook:build
+          exitOnceUploaded: true

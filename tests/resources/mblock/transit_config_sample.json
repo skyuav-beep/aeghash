@@ -1,0 +1,11 @@
+{
+  "result": true,
+  "config": {
+    "fee": 0.0002,
+    "feeWalletKey": "097nUePpxA4K0….........38i7x3I8933jcIUD",
+    "delay": 5,
+    "count": 2,
+    "callback": "https://domain.com/path"
+  },
+  "message": "{RESULT_MESSAGE}"
+}

@@ -1,0 +1,156 @@
+{
+  "$schema": "https://aeg-hash.example.com/schemas/design-tokens/components.schema.json",
+  "meta": {
+    "name": "AEG Hash Component Tokens",
+    "version": "1.1.0",
+    "description": "Stateful component tokens for buttons, inputs, cards, and interactive feedback."
+  },
+  "components": {
+    "button": {
+      "border_radius": "30px",
+      "padding": {
+        "vertical": "12px",
+        "horizontal": "24px"
+      },
+      "variants": {
+        "primary": {
+          "background": "{colors.palette.primary.value}",
+          "foreground": "{colors.typography_support.text.primary}",
+          "border": "none",
+          "shadow": "none",
+          "states": {
+            "hover": {
+              "background": "{colors.palette.primary_light.value}",
+              "shadow": "0 6px 18px rgba(253, 201, 21, 0.3)"
+            },
+            "focus": {
+              "outline_color": "{colors.palette.focus.value}",
+              "outline_style": "solid",
+              "outline_width": "2px",
+              "shadow": "0 0 0 4px rgba(253, 201, 21, 0.2)"
+            },
+            "pressed": {
+              "background": "{colors.palette.primary_dark.value}",
+              "transform": "scale(0.96)"
+            },
+            "disabled": {
+              "background": "{colors.palette.surface_muted.value}",
+              "foreground": "{colors.typography_support.text.disabled}",
+              "border": "1px solid #CCCCCC"
+            }
+          }
+        },
+        "secondary": {
+          "background": "transparent",
+          "foreground": "{colors.typography_support.text.primary}",
+          "border": "1px solid {colors.palette.primary.value}",
+          "shadow": "none",
+          "states": {
+            "hover": {
+              "background": "{colors.palette.primary_light.value}",
+              "foreground": "{colors.typography_support.text.primary}"
+            },
+            "focus": {
+              "outline_color": "{colors.palette.focus.value}",
+              "outline_style": "solid",
+              "outline_width": "2px",
+              "shadow": "0 0 0 4px rgba(253, 201, 21, 0.2)"
+            },
+            "pressed": {
+              "background": "{colors.palette.primary.value}",
+              "foreground": "{colors.typography_support.text.primary}"
+            },
+            "disabled": {
+              "background": "transparent",
+              "foreground": "{colors.typography_support.text.disabled}",
+              "border": "1px solid #CCCCCC"
+            }
+          }
+        }
+      }
+    },
+    "input": {
+      "border_radius": "8px",
+      "padding": "12px 16px",
+      "border": "1px solid {colors.palette.border.value}",
+      "background": "{colors.palette.background.value}",
+      "foreground": "{colors.typography_support.text.primary}",
+      "states": {
+        "focus": {
+          "border": "1px solid {colors.palette.focus.value}",
+          "shadow": "0 0 0 4px rgba(253, 201, 21, 0.2)"
+        },
+        "error": {
+          "border": "1px solid {colors.palette.error.value}",
+          "shadow": "0 0 0 4px rgba(255, 90, 90, 0.15)"
+        },
+        "disabled": {
+          "border": "1px solid #D5D5D5",
+          "background": "{colors.palette.surface_muted.value}",
+          "foreground": "{colors.typography_support.text.disabled}"
+        }
+      },
+      "helper_text": {
+        "font": "{typography.scale.caption}",
+        "color": "{colors.typography_support.text.secondary}"
+      }
+    },
+    "card": {
+      "border_radius": "12px",
+      "padding": "16px",
+      "background": "{colors.palette.background.value}",
+      "shadow": "{colors.elevation.shadow_low}",
+      "gap": "12px",
+      "states": {
+        "hover": {
+          "shadow": "{colors.elevation.shadow_medium}",
+          "border": "1px solid rgba(234, 234, 234, 0.8)"
+        },
+        "selected": {
+          "border": "2px solid {colors.palette.primary.value}",
+          "shadow": "{colors.elevation.shadow_medium}"
+        }
+      }
+    },
+    "toast": {
+      "border_radius": "12px",
+      "padding": "12px 18px",
+      "shadow": "{colors.elevation.shadow_medium}",
+      "variants": {
+        "success": {
+          "background": "rgba(15, 157, 88, 0.12)",
+          "border": "1px solid rgba(15, 157, 88, 0.4)",
+          "icon_color": "{colors.palette.success.value}"
+        },
+        "error": {
+          "background": "rgba(255, 90, 90, 0.15)",
+          "border": "1px solid rgba(255, 90, 90, 0.4)",
+          "icon_color": "{colors.palette.error.value}"
+        },
+        "warning": {
+          "background": "rgba(255, 183, 77, 0.18)",
+          "border": "1px solid rgba(255, 183, 77, 0.4)",
+          "icon_color": "{colors.palette.warning.value}"
+        },
+        "info": {
+          "background": "rgba(0, 47, 108, 0.08)",
+          "border": "1px solid rgba(0, 47, 108, 0.3)",
+          "icon_color": "{colors.palette.accent.value}"
+        }
+      },
+      "motion": {
+        "enter": {
+          "type": "slide",
+          "from": "translateY(16px)",
+          "duration": "200ms",
+          "easing": "cubic-bezier(0.22, 1, 0.36, 1)"
+        },
+        "exit": {
+          "type": "fade",
+          "duration": "150ms",
+          "easing": "ease-in"
+        }
+      }
+    }
+  }
+}

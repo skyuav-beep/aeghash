@@ -1,0 +1,14 @@
+@import "../../../tokens/dist/design-tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.demo-card {
+  @apply bg-background text-text-primary rounded-card shadow-aeg-shadow-medium p-6;
+}
+
+.demo-button {
+  @apply inline-flex items-center justify-center px-6 py-3 rounded-full font-medium text-text-primary;
+  background: var(--aeg-component-button-variants-primary-background);
+}

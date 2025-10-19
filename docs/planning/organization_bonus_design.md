@@ -1,5 +1,7 @@
 # 조직·보너스 엔진 설계 초안 (v0.1)
 
+> 상태: **검토 요청(Ready for Review)** — 이해 관계자 확인 후 확정 예정
+
 ## 1. 범위와 목표
 - 유니레벨/바이너리 조직 트리 데이터를 일관되게 저장하고 조회한다.
 - 신규 가입 시 바이너리 스필오버 규칙을 적용해 좌·우 라인을 자동 배치한다.
@@ -137,6 +139,26 @@ function place_binary_member(sponsor_id, new_user_id, preferred_slot=None):
 - [ ] 스필오버 BFS 탐색을 위한 SQL/Redis 캐시 비교 검토.
 - [x] 보너스 규칙 모듈별 단위 테스트 시나리오 목록 작성.
 - [ ] 마감 배치 스케줄링(Crontab/Airflow) 및 감사 로그 정책 정의.
+
+> 구현 현황: `src/aeghash/core/organization.py`와 `src/aeghash/core/bonus_pipeline.py`에서 스필오버 및 추천/후원/공유/센터 보너스를 계산하며, InMemory·SQLAlchemy 저장소와 단위/통합 테스트(`tests/unit/core/test_bonus_pipeline.py`, `tests/integration/test_bonus_pipeline.py`)가 제공된다.
+
+### 5.1 마감/재시도 스케줄링 설계 (추가)
+
+- **마감 주기 관리**: 환경 변수 `BONUS_CLOSING_CRON`(예: `0 3 * * *`)을 기준으로 스케줄러가 `bonus.closing.enqueue` 이벤트를 발행한다. 워커는 동일 이벤트를 수신해 마감 잡을 생성(`bonus_closing_jobs`)한다.
+- **실행 단계**
+  1. `bonus_entries`에서 `status='pending'`·`retry_count<5` 레코드를 배치 단위로 조회한다.
+  2. 각 항목에 대해 `PointWalletService.credit(..., hold=False)` 호출 후 `status='confirmed'`, `confirmed_at=now()`로 전환한다.
+  3. 실패 시 `bonus_retry_queue`에 `retry_after`, `retry_count+1`, `failure_reason`을 저장하고 Slack/Webhook 알림을 발송한다.
+- **재시도 워커**: 별도 5분 주기 워커가 `bonus_retry_queue`를 확인하며, 5회 초과 실패 시 `FAILED`로 마크하고 PagerDuty 알림으로 에스컬레이션한다.
+- **감사 로그/메트릭**: `bonus_daily_closing`에 `job_id`, `total_entries`, `confirmed_count`, `retry_count`, `duration_ms`를 JSON으로 기록하고, Prometheus 지표(`bonus_closing.duration_ms`, `bonus_closing.errors_total`, `bonus_retry_queue.backlog`)를 노출해 Grafana 경보를 설정한다.
+- **구현 현황**: `src/aeghash/core/bonus_retry.py`의 `BonusRetryService`와 `SqlAlchemyBonusRepository.schedule_retry()`가 큐 상태 전환, 백오프, 실패 마킹을 담당한다. 인메모리/SQL 저장소 모두 `list_retry_candidates`·`mark_retry_*` 인터페이스를 제공하여 단위 테스트(`tests/unit/core/test_bonus_retry.py`)로 검증된다.
+
+### 5.2 조직 KPI 메트릭 & API (신규)
+
+- **데이터 원천**: `organization_metrics_daily` 테이블의 `personal_volume`, `group_volume`, `volume_left/right`, `orders_count` 필드를 사용한다.
+- **서비스 레이어**: `src/aeghash/core/organization_kpi.py`의 `OrganizationKpiService`가 기간 계산, 일자별 보간, 합계를 수행한다.
+- **API 엔드포인트**: `GET /admin/organizations/{tree_type}/{node_id}/kpi?days=7` (기본 7일, 최대 90일). FastAPI 라우터는 `OrganizationKpiAPI`를 통해 KPI 요약 JSON(`period`, `totals`, `latest`, `daily`)을 반환한다.
+- **직접 사용 예시**: `days=7` 요청 시 최근 7일 일자별 PV/주문 카운트, 최신 좌/우 볼륨과 누적 합계를 함께 응답한다. 응답 필드는 문자열 포맷의 Decimal을 사용해 프론트 포맷 오차를 최소화한다.
 
 ## 6. 테스트 시나리오 초안
 

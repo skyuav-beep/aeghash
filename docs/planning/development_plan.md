@@ -37,11 +37,19 @@
 - 초기 관리자/사용자 권한 매트릭스와 접근 제어 적용 (`platform_system_plan.md:22`)
 
 **Task1**
-- [ ] Google/Kakao/Apple OAuth 연동 및 테스트
-- [ ] Turnstile 적용(로그인/회원가입/비밀번호 찾기) 및 실패 케이스 처리
-- [ ] 2FA(이메일/OTP) 설계 및 토큰 저장 정책 확정
-- [ ] 로그인 감사 로그 및 보안 이벤트 트래킹 파이프라인 구축
-- [ ] 역할/권한 매트릭스 적용과 초기 관리자 콘솔 접근 제어
+- [x] Google/Kakao/Apple OAuth 연동 및 테스트
+    - 개발 모드(`AEGHASH_DEV_MODE=1`)에서 스텁 OAuth 트랜스포트를 사용해 계정 없이 인증 플로를 검증 가능
+- [x] Turnstile 적용(로그인/회원가입/비밀번호 찾기) 및 실패 케이스 처리
+    - `AuthenticationAPI`로 콜백을 처리하며 Turnstile 토큰과 원격 IP를 자동 검증
+    - FastAPI 엔드포인트(`/oauth/callback`)는 `create_http_app`으로 구성하며, 검증 실패 시 400 응답으로 오류를 노출
+- [x] 일반 회원가입 API 및 저장소 구현
+    - `/signup` 엔드포인트에서 비밀번호 해시 생성, `user_accounts`/`user_identities` 등록, 중복 이메일 검증을 수행
+- [x] 운영 사용자 초기 등록 및 시드 스크립트 실행
+    - `scripts/seed_user_identities.py`로 관리자 계정 OAuth 매핑을 등록하고 중복 여부를 검증
+- [x] 2FA(이메일/OTP) 설계 및 토큰 저장 정책 확정
+- [x] 로그인 감사 로그 및 보안 이벤트 트래킹 파이프라인 구축
+    - `/login/password`는 성공/실패 시 `login_audit_logs`에 기록하고 `/audit/logins`로 최신 기록을 조회 가능
+- [x] 역할/권한 매트릭스 적용과 초기 관리자 콘솔 접근 제어
 
 **Task2**
 - [x] 인증 UI 와이어프레임/프로토타입 제작 및 검수
@@ -53,7 +61,7 @@
 - 관리자 테이블/필터 UI 구현 (`uiux_task_breakdown.md:12`~`uiux_task_breakdown.md:16`)
 
 **Task1**
-- [ ] 지갑/포인트 도메인 모델 및 서비스 레이어 구현
+- [x] 지갑/포인트 도메인 모델 및 서비스 레이어 구현
 - [x] MBlock Wallet API(`MBlock Docs v1.4`) 기반 지갑 생성·초기화 클라이언트 스켈레톤 구축 (`aeghash.adapters.mblock`)
 - [x] MBlock Network/Transit API 연동(잔액 조회, 전송, 스왑/결제 시나리오) 준비: 트랜스포트/클라이언트 스켈레톤 및 단위 테스트 작성
 - [x] Wallet Service 오케스트레이션 스켈레톤 (`aeghash.core.wallet_service`) 작성
@@ -63,15 +71,15 @@
 - [x] SessionManager 컨텍스트(`src/aeghash/infrastructure/session.py`) 및 세션 단위 테스트 (`tests/unit/infrastructure/test_session_manager.py`)
 - [x] DB/Alembic 전략 문서화 (`docs/planning/database_strategy.md`, `docs/planning/migration_strategy.md`)
 - [x] 재시도/알림 워크플로 전략 문서화 (`docs/planning/retry_notification_strategy.md`)
-- [ ] MBlock API Key/Value(문서 제공) 보안 저장 및 비밀 관리 정책 정의
-- [ ] 출금 승인·보류·거절 워크플로 및 감사 로그 연계
-- [ ] 위험 탐지 규칙(한도, IP, 디바이스) 정의 및 알림 채널 연결
-- [ ] 통합 테스트 및 회귀 테스트 작성
+- [x] MBlock API Key/Value(문서 제공) 보안 저장 및 비밀 관리 정책 정의
+- [x] 출금 승인·보류·거절 워크플로 및 감사 로그 연계
+- [x] 위험 탐지 규칙(한도, IP, 디바이스) 정의 및 알림 채널 연결
+- [x] 통합 테스트 및 회귀 테스트 작성
 
 **Task2**
-- [ ] 관리자 대시보드 테이블/필터 컴포넌트 UI 제작
-- [ ] 자산/정산 관련 UX 카피 및 사용자 알림 흐름 설계
-- [ ] 출금/보류/위험 탐지 화면 시나리오 문서화
+- [x] 관리자 대시보드 테이블/필터 컴포넌트 UI 제작
+- [x] 자산/정산 관련 UX 카피 및 사용자 알림 흐름 설계
+- [x] 출금/보류/위험 탐지 화면 시나리오 문서화
 
 ### 단계 3 — 조직·보너스 엔진 (4주)
 - 유니레벨/바이너리 데이터 모델, 스필오버 로직, 보너스 배치 (`platform_system_plan.md:18`)
@@ -79,15 +87,15 @@
 - 관리자 조직도 뷰 UI 와이어프레임 → 구현
 
 **Task1**
-- [ ] 조직도 스키마(유니레벨/바이너리) 및 스필오버 알고리즘 구현
-- [ ] 보너스 배치 파이프라인(추천/후원/공유/센터/센터추천) 개발
-- [ ] 재시도 큐 및 실패 처리 전략 수립
-- [ ] KPI 대시보드 초기 메트릭 정의 및 API 작성
+- [x] 조직도 스키마(유니레벨/바이너리) 및 스필오버 알고리즘 구현
+- [x] 보너스 배치 파이프라인(추천/후원/공유/센터/센터추천) 개발
+- [x] 재시도 큐 및 실패 처리 전략 수립
+- [x] KPI 대시보드 초기 메트릭 정의 및 API 작성
 
 **Task2**
-- [ ] 조직도 뷰 UI(캔버스/줌/정보 패널) 프로토타입 및 개발
-- [ ] KPI 대시보드 시각화 컴포넌트 설계
-- [ ] 보너스 상태/경고 메시지 UX 가이드 작성
+- [x] 조직도 뷰 UI(캔버스/줌/정보 패널) 프로토타입 및 개발
+- [x] KPI 대시보드 시각화 컴포넌트 설계
+- [x] 보너스 상태/경고 메시지 UX 가이드 작성
 
 ### 단계 4 — 커머스·채굴·가맹점 (5주)
 - 쇼핑몰 상품/결제, PV 연동, AEGMALL·Hashdam API 통합 (`platform_system_plan.md:19`, `platform_system_plan.md:26`)
@@ -95,21 +103,21 @@
 - 사용자 모바일 플로우 및 플로팅 내비 UI 구현 (`uiux_task_breakdown.md:18`~`uiux_task_breakdown.md:22`)
 
 **Task1**
-- [ ] 쇼핑몰 상품/결제 서버 로직 및 PV 반영 파이프 개발
+- [x] 쇼핑몰 상품/결제 서버 로직 및 PV 반영 파이프 개발
 - [x] HashDam Mining API(`HashDam API v1`) 연동 준비: 클라이언트 스켈레톤 및 응답 변환 유닛 테스트 (`aeghash.adapters.hashdam`)
 - [x] Mining Service 스켈레톤 (`aeghash.core.mining_service`) 작성
 - [x] Mining Repository 인터페이스 정의(`aeghash.core.repositories`) 및 단위 테스트 작성 (`tests/unit/core/test_mining_service.py`)
 - [x] Mining 통합 테스트 골격 (`tests/integration/test_mining_flow.py`) 작성 및 InMemory 저장소 도입
 - [x] SQLAlchemy 기반 Mining Repository 구현(`aeghash.infrastructure.repositories`) 및 검증 테스트 (`tests/integration/test_sqlalchemy_repositories.py`)
-- [ ] AEGMALL·Hashdam API 멱등/재시도 전략 구현 및 통합 테스트
-- [ ] HashDam API 인증 방식 확인(별도 Key Value 미제공 사항 코멘트) 및 호출 정책 정리
-- [ ] HashDam 자산 인출 요청과 플랫폼 출금 승인 플로우 연동
+- [x] AEGMALL·Hashdam API 멱등/재시도 전략 구현 및 통합 테스트
+- [x] HashDam API 인증 방식 확인(별도 Key Value 미제공 사항 코멘트) 및 호출 정책 정리
+- [x] HashDam 자산 인출 요청과 플랫폼 출금 승인 플로우 연동
 
 **Task2**
-- [ ] 채굴 현황(8종 자산) 대시보드 및 출금 요청 화면 제작
-- [ ] 가맹점 POS/QR 결제, 정산 주기, 직원 권한 UI/UX 구현
-- [ ] 모바일 플로우 와이어프레임을 반응형 UI로 구현 및 QA
-- [ ] 가맹점/채굴 관련 사용자 교육 자료 및 인앱 가이드 작성
+- [x] 채굴 현황(8종 자산) 대시보드 및 출금 요청 화면 제작
+- [x] 가맹점 POS/QR 결제, 정산 주기, 직원 권한 UI/UX 구현
+- [x] 모바일 플로우 와이어프레임을 반응형 UI로 구현 및 QA
+- [x] 가맹점/채굴 관련 사용자 교육 자료 및 인앱 가이드 작성
 
 ### 단계 5 — 운영 도구 및 안정화 (3주)
 - 정산/출금 승인 워크플로, 감사·알림 정책, 필드 마스킹/RLS (`platform_system_plan.md:20`, `platform_system_plan.md:27`)
@@ -117,14 +125,14 @@
 - 문서화·릴리즈 프로세스 정비 (`uiux_task_breakdown.md:29`~`uiux_task_breakdown.md:31`)
 
 **Task1**
-- [ ] 정산/출금 승인 2인 검토 옵션 및 감사 로그 연동
-- [ ] 필드 마스킹·RLS 정책 적용 및 운영자 권한 검토
-- [ ] 운영 KPI 대시보드 백엔드 API 완성 및 모니터링 알림 연계
+- [x] 정산/출금 승인 2인 검토 옵션 및 감사 로그 연동
+- [x] 필드 마스킹·RLS 정책 적용 및 운영자 권한 검토
+- [x] 운영 KPI 대시보드 백엔드 API 완성 및 모니터링 알림 연계
 
 **Task2**
-- [ ] 운영 대시보드 UI 완성 및 KPI 시각화 검수
-- [ ] 반응형/접근성 테스트(contrast, 키보드 네비) 및 자동화 스크립트 실행
-- [ ] 릴리즈 노트, 온보딩 자료, 협업 프로세스 문서화
+- [x] 운영 대시보드 UI 완성 및 KPI 시각화 검수
+- [x] 반응형/접근성 테스트(contrast, 키보드 네비) 및 자동화 스크립트 실행
+- [x] 릴리즈 노트, 온보딩 자료, 협업 프로세스 문서화
 
 ## 4. 마일스톤 & 산출물
 - M1 (단계 1 완료): 인증·보안 MVP + 관리자 기초 UI

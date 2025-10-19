@@ -1,0 +1,89 @@
+{
+  "$schema": "https://aeg-hash.example.com/schemas/design-tokens/typography.schema.json",
+  "meta": {
+    "name": "AEG Hash Typography Tokens",
+    "version": "1.0.0",
+    "description": "Font stacks and typographic scale aligned with the UI/UX policy."
+  },
+  "font_families": {
+    "sans_primary": {
+      "value": "'Inter', 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      "fallback": ["-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"]
+    },
+    "mono": {
+      "value": "'Roboto Mono', 'Fira Code', ui-monospace, monospace"
+    }
+  },
+  "scale": {
+    "title": {
+      "font_size": "24px",
+      "line_height": "32px",
+      "font_weight": 700,
+      "letter_spacing": "-0.01em"
+    },
+    "subtitle": {
+      "font_size": "18px",
+      "line_height": "26px",
+      "font_weight": 500,
+      "letter_spacing": "0"
+    },
+    "body_primary": {
+      "font_size": "16px",
+      "line_height": "24px",
+      "font_weight": 400,
+      "letter_spacing": "0"
+    },
+    "body_secondary": {
+      "font_size": "14px",
+      "line_height": "22px",
+      "font_weight": 400,
+      "letter_spacing": "0"
+    },
+    "caption": {
+      "font_size": "12px",
+      "line_height": "18px",
+      "font_weight": 400,
+      "letter_spacing": "0.01em"
+    },
+    "button": {
+      "font_size": "16px",
+      "line_height": "22px",
+      "font_weight": 500,
+      "letter_spacing": "0.01em",
+      "text_transform": "none"
+    },
+    "overline": {
+      "font_size": "11px",
+      "line_height": "16px",
+      "font_weight": 600,
+      "letter_spacing": "0.08em",
+      "text_transform": "uppercase"
+    },
+    "data_table_header": {
+      "font_size": "13px",
+      "line_height": "18px",
+      "font_weight": 600,
+      "letter_spacing": "0.02em"
+    },
+    "data_table_cell": {
+      "font_size": "14px",
+      "line_height": "20px",
+      "font_weight": 400,
+      "letter_spacing": "0"
+    }
+  },
+  "responsive_rules": {
+    "mobile": {
+      "breakpoint": "0-480px",
+      "scale_multiplier": 1
+    },
+    "tablet": {
+      "breakpoint": "481-1024px",
+      "scale_multiplier": 1.05
+    },
+    "desktop": {
+      "breakpoint": "1025px+",
+      "scale_multiplier": 1.15
+    }
+  }
+}

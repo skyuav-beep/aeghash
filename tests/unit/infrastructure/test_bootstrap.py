@@ -1,7 +1,14 @@
 from decimal import Decimal
 
 from aeghash.adapters.hashdam import HashBalance
-from aeghash.config import AppSettings, HashDamSettings, MBlockSettings
+from aeghash.config import (
+    AppSettings,
+    HashDamSettings,
+    MBlockSettings,
+    OAuthProviderSettings,
+    OAuthSettings,
+    TurnstileSettings,
+)
 from aeghash.infrastructure.bootstrap import mining_service_scope, wallet_service_scope
 from aeghash.infrastructure.database import Base
 from aeghash.infrastructure.repositories import MiningBalanceModel, WithdrawalModel, WalletModel
@@ -42,13 +49,24 @@ class DummyHashDamClient:
         self.closed = True
 
 
-def test_wallet_service_scope_manages_client_and_session():
-    app_settings = AppSettings(
+def _make_app_settings() -> AppSettings:
+    oauth = OAuthSettings(
+        google=OAuthProviderSettings(client_id="g", client_secret="gs", redirect_uri="https://redirect"),
+        kakao=OAuthProviderSettings(client_id="k", client_secret="ks", redirect_uri="https://redirect"),
+        apple=OAuthProviderSettings(client_id="a", client_secret="as", redirect_uri="https://redirect"),
+    )
+    return AppSettings(
         hashdam=HashDamSettings(),
         mblock=MBlockSettings(base_url="http://mock", api_key="key"),
+        oauth=oauth,
+        turnstile=TurnstileSettings(secret_key="turnstile"),
         database_url="sqlite+pysqlite:///:memory:",
         secret_key="secret",
     )
+
+
+def test_wallet_service_scope_manages_client_and_session():
+    app_settings = _make_app_settings()
 
     manager = SessionManager(app_settings.database_url)
     Base.metadata.create_all(manager.engine)
@@ -67,12 +85,7 @@ def test_wallet_service_scope_manages_client_and_session():
 
 
 def test_mining_service_scope():
-    app_settings = AppSettings(
-        hashdam=HashDamSettings(),
-        mblock=MBlockSettings(base_url="http://mock", api_key="key"),
-        database_url="sqlite+pysqlite:///:memory:",
-        secret_key="secret",
-    )
+    app_settings = _make_app_settings()
 
     manager = SessionManager(app_settings.database_url)
     Base.metadata.create_all(manager.engine)

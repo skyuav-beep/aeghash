@@ -1,0 +1,78 @@
+{
+  "$schema": "https://aeg-hash.example.com/schemas/design-tokens/colors.schema.json",
+  "meta": {
+    "name": "AEG Hash Color Tokens",
+    "version": "1.1.0",
+    "description": "Design color palette for AEG Hash surfaces derived from the v1.1 UI/UX policy."
+  },
+  "palette": {
+    "primary": {
+      "value": "#FDC915",
+      "role": "Primary action backgrounds and highlights",
+      "contrast_pairings": ["text.primary", "text.inverted"]
+    },
+    "primary_light": {
+      "value": "#FFE46D",
+      "role": "Hover states, subtle emphasis backgrounds",
+      "contrast_pairings": ["text.primary"]
+    },
+    "primary_dark": {
+      "value": "#C99700",
+      "role": "Pressed states and outlines for primary actions",
+      "contrast_pairings": ["text.inverted"]
+    },
+    "accent": {
+      "value": "#002F6C",
+      "role": "Admin dashboard accents and data visual emphasis",
+      "contrast_pairings": ["text.inverse_on_accent"]
+    },
+    "background": {
+      "value": "#FFFFFF",
+      "role": "Default surface background",
+      "contrast_pairings": ["text.primary", "text.secondary"]
+    },
+    "surface_muted": {
+      "value": "#F7F7F7",
+      "role": "Cards, disabled buttons, alternate rows",
+      "contrast_pairings": ["text.primary", "text.secondary", "text.disabled"]
+    },
+    "border": {
+      "value": "#EAEAEA",
+      "role": "Dividers, card borders, table grid",
+      "contrast_pairings": ["text.secondary"]
+    },
+    "focus": {
+      "value": "#FDC915",
+      "role": "Focus rings and accessibility outlines",
+      "contrast_pairings": ["text.primary"]
+    },
+    "error": {
+      "value": "#FF5A5A",
+      "role": "Validation errors, destructive actions",
+      "contrast_pairings": ["text.inverse_on_accent"]
+    },
+    "success": {
+      "value": "#0F9D58",
+      "role": "Success toasts, positive confirmations",
+      "contrast_pairings": ["text.inverse_on_accent"]
+    },
+    "warning": {
+      "value": "#FFB74D",
+      "role": "Cautionary banners, pending statuses",
+      "contrast_pairings": ["text.primary"]
+    }
+  },
+  "typography_support": {
+    "text.primary": "#1A1A1A",
+    "text.secondary": "#444444",
+    "text.muted": "#666666",
+    "text.disabled": "#AAAAAA",
+    "text.inverted": "#1A1A1A",
+    "text.inverse_on_accent": "#FFFFFF"
+  },
+  "elevation": {
+    "shadow_low": "0 2px 8px rgba(0, 0, 0, 0.05)",
+    "shadow_medium": "0 8px 24px rgba(0, 0, 0, 0.08)",
+    "shadow_high": "0 16px 48px rgba(0, 0, 0, 0.12)"
+  }
+}

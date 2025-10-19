@@ -47,6 +47,9 @@ with wallet_service_scope(session_manager, mblock_client_factory, settings) as w
 - Mining 출금 보상
   - HashDam API 실패 시 `failed` 로그와 함께 재시도 큐에 등록.
   - Withdraw ID 미수신(Empty) 상태는 재시도 시 새로운 요청 ID로 업데이트.
+- 행 단위 보안
+  - 지갑/출금 API는 `PointWalletService`에서 지갑 소유자 ID를 검증해 다른 사용자의 `wallet_id`를 사용할 수 없도록 차단한다.
+  - 감사 로그 등 민감 데이터는 `PermissionService` 권한에 따라 원본/마스킹 상태로 분기한다.
 
 ## 5. 테스트 전략
 - 단위 테스트: 인메모리/Mock 기반으로 실패 시 상태 기록 확인 (완료됨).
@@ -59,4 +62,6 @@ with wallet_service_scope(session_manager, mblock_client_factory, settings) as w
 1. PostgreSQL 연결 URL을 `.env` 및 배포 환경 시크릿에 등록.
 2. 세션 컨텍스트 헬퍼를 `src/aeghash/infrastructure/session.py` 등으로 분리하고 서비스 초기화 코드에 통합.
 3. Alembic 기반 마이그레이션 스크립트를 작성하여 Wallet/Miner 테이블 스키마를 관리.
-4. 재시도 로직을 구체화(예: `tenacity` 라이브러리 또는 자체 백오프 구현)하고 실패 알림 흐름을 Event/Queue와 연계.
+4. `user_identities` 테이블 마이그레이션(`202502141045`)을 적용하고, `scripts/seed_user_identities.py`로 운영 사용자 OAuth 매핑을 초기화.
+5. `user_accounts` 테이블 마이그레이션(`202502141200`)을 적용하고, `scripts/enable_two_factor.py`로 TOTP 활성화 후 `/signup` 흐름을 검증.
+6. 재시도 로직을 구체화(예: `tenacity` 라이브러리 또는 자체 백오프 구현)하고 실패 알림 흐름을 Event/Queue와 연계.

@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    name: Backend Checks (Codex Task1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+
+      - name: Install dependencies
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          poetry install
+
+      - name: Lint
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          poetry run ruff check src tests
+
+      - name: Type check
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          poetry run mypy src
+
+      - name: Tests
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          poetry run pytest
+
+      - name: Skip (setup pending)
+        if: hashFiles('pyproject.toml') == ''
+        run: echo "pyproject.toml not found yet; backend pipeline placeholder."

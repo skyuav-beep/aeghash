@@ -11,6 +11,7 @@ class StubHashDamClient:
         self.balance_calls = 0
         self.withdrawals = []
         self.fail_withdrawal = False
+        self.withdrawal_failures_remaining = 0
 
     def get_hash_balance(self) -> HashBalance:
         self.balance_calls += 1
@@ -19,6 +20,9 @@ class StubHashDamClient:
     def request_asset_withdrawal(self, *, coin: str, amount: Decimal) -> AssetWithdrawal:
         if self.fail_withdrawal:
             raise ValueError("withdrawal failure")
+        if self.withdrawal_failures_remaining:
+            self.withdrawal_failures_remaining -= 1
+            raise RuntimeError("temporary withdrawal failure")
         self.withdrawals.append({"coin": coin, "amount": amount})
         return AssetWithdrawal(withdraw_id="wd123", coin=coin, amount=amount)
 
@@ -87,3 +91,16 @@ def test_request_withdrawal_failure_logs_status() -> None:
     assert repository.withdrawals[0].status == "failed"
     assert repository.withdrawals[0].withdraw_id is None
     assert notifier.messages
+
+
+def test_request_withdrawal_retries_on_transient_error() -> None:
+    client = StubHashDamClient()
+    client.withdrawal_failures_remaining = 1
+    repository = StubMiningRepository()
+    service = MiningService(client, repository, retry_config=RetryConfig(attempts=2, initial_delay=0))
+
+    result = service.request_withdrawal(user_id="user-1", coin="PEP", amount=Decimal("5"))
+
+    assert result.withdraw_id == "wd123"
+    assert len(client.withdrawals) == 1
+    assert repository.withdrawals[0].status == "submitted"

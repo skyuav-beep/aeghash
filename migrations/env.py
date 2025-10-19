@@ -11,6 +11,10 @@ from aeghash.infrastructure import Base
 
 config = context.config
 
+override_url = os.getenv("DATABASE_URL")
+if override_url:
+    config.set_main_option("sqlalchemy.url", override_url)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
